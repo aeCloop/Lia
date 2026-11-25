@@ -421,9 +421,9 @@ export function ChatWorkspace({
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={handleKeyDown}
             rows={1}
-            placeholder="Escreva sua dúvida com calma..."
+            placeholder="Escreva sua dúvida..."
             aria-label="Mensagem para a Lia"
-            className="flex-1 min-h-[44px] max-h-32 px-4 py-2.5 rounded-xl border border-[var(--lia-border)] bg-white text-base sm:text-sm text-[var(--lia-ink)] placeholder:text-[var(--lia-ink-muted)] resize-y focus:outline-none focus:border-[var(--lia-accent)]"
+            className="flex-1 min-h-[48px] max-h-32 px-4 py-3 rounded-xl border border-[var(--lia-border)] bg-white text-base sm:text-sm leading-snug text-[var(--lia-ink)] placeholder:text-[var(--lia-ink-muted)] resize-y focus:outline-none focus:border-[var(--lia-accent)]"
           />
 
           <button
