@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import type { Request, Response } from 'express';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { handleChatRequest } from './server/chatHandler.ts';
@@ -32,9 +33,32 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distDir = path.resolve(__dirname, 'dist');
-    app.use(express.static(distDir));
-    app.get('/{*splat}', (_req: Request, res: Response) => {
-      res.sendFile(path.join(distDir, 'index.html'));
+    const indexPath = path.join(distDir, 'index.html');
+    const rawIndexHtml = fs.existsSync(indexPath)
+      ? fs.readFileSync(indexPath, 'utf-8')
+      : '';
+
+    app.use(express.static(distDir, { index: false }));
+    app.get('/{*splat}', (req: Request, res: Response) => {
+      if (!rawIndexHtml) {
+        res.sendFile(indexPath);
+        return;
+      }
+      const forwardedProto =
+        (req.headers['x-forwarded-proto'] as string | undefined)?.split(',')[0]?.trim() ||
+        'https';
+      const host =
+        (req.headers['x-forwarded-host'] as string | undefined)?.split(',')[0]?.trim() ||
+        req.headers.host;
+      const html =
+        host && rawIndexHtml.includes('content="/og-image.png"')
+          ? rawIndexHtml.replaceAll(
+              'content="/og-image.png"',
+              `content="${forwardedProto}://${host}/og-image.png"`
+            )
+          : rawIndexHtml;
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(html);
     });
   }
 

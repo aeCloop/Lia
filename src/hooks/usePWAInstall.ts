@@ -5,9 +5,17 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
 }
 
+declare global {
+  interface Window {
+    __liaDeferredPrompt?: BeforeInstallPromptEvent | null;
+  }
+}
+
 export function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null);
+    useState<BeforeInstallPromptEvent | null>(() =>
+      typeof window !== 'undefined' ? window.__liaDeferredPrompt ?? null : null
+    );
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
 
@@ -21,20 +29,34 @@ export function usePWAInstall() {
     const userAgent = window.navigator.userAgent.toLowerCase();
     setIsIOS(/iphone|ipad|ipod/.test(userAgent));
 
+    if (window.__liaDeferredPrompt) {
+      setDeferredPrompt(window.__liaDeferredPrompt);
+    }
+
+    const handleEarlyPrompt = () => {
+      if (window.__liaDeferredPrompt) {
+        setDeferredPrompt(window.__liaDeferredPrompt);
+      }
+    };
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
+      window.__liaDeferredPrompt = e as BeforeInstallPromptEvent;
       setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
     const handleAppInstalled = () => {
       setIsInstalled(true);
       setDeferredPrompt(null);
+      window.__liaDeferredPrompt = null;
     };
 
+    window.addEventListener('lia-pwa-prompt-ready', handleEarlyPrompt);
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
+      window.removeEventListener('lia-pwa-prompt-ready', handleEarlyPrompt);
       window.removeEventListener(
         'beforeinstallprompt',
         handleBeforeInstallPrompt
@@ -44,19 +66,21 @@ export function usePWAInstall() {
   }, []);
 
   const install = async (): Promise<boolean> => {
-    if (!deferredPrompt) return false;
-    await deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    const promptEvent = deferredPrompt || window.__liaDeferredPrompt;
+    if (!promptEvent) return false;
+    await promptEvent.prompt();
+    const { outcome } = await promptEvent.userChoice;
     if (outcome === 'accepted') {
       setIsInstalled(true);
       setDeferredPrompt(null);
+      window.__liaDeferredPrompt = null;
       return true;
     }
     return false;
   };
 
   return {
-    isInstallable: !!deferredPrompt,
+    isInstallable: !!(deferredPrompt || (typeof window !== 'undefined' && window.__liaDeferredPrompt)),
     isInstalled,
     isIOS,
     install,

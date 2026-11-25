@@ -8,20 +8,47 @@
       name="description"
       content="Assistente acolhedora para pais, mães e cuidadores de primeira viagem no Brasil, do planejamento aos 5 anos."
     />
+    <meta property="og:site_name" content="Lia" />
+    <meta property="og:locale" content="pt_BR" />
     <meta property="og:title" content="Lia — Apoio à Maternidade e Paternidade" />
     <meta
       property="og:description"
       content="Assistente acolhedora para pais, mães e cuidadores de primeira viagem no Brasil, do planejamento aos 5 anos."
     />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image:secure_url" content="/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Lia — Apoio à Maternidade e Paternidade"
+    />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lia — Apoio à Maternidade e Paternidade" />
+    <meta
+      name="twitter:description"
+      content="Assistente acolhedora para pais, mães e cuidadores de primeira viagem no Brasil, do planejamento aos 5 anos."
+    />
+    <meta name="twitter:image" content="/og-image.png" />
     <meta name="theme-color" content="#1D5B9E" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Lia" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
+    <link rel="shortcut icon" href="/pwa-192x192.png" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <script>
+      window.__liaDeferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        window.__liaDeferredPrompt = e;
+        window.dispatchEvent(new CustomEvent('lia-pwa-prompt-ready'));
+      });
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

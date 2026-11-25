@@ -23,7 +23,7 @@ export interface ChatAttachment {
   id: string;
   name: string;
   mimeType: string;
-  data: string; // base64 without data URL prefix
+  data: string; // base64 without data URL prefix (empty when stripped for localStorage)
   previewUrl?: string;
 }
 
@@ -34,6 +34,15 @@ export interface ChatMessage {
   attachments?: ChatAttachment[];
   createdAt: string;
   isError?: boolean;
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
+  stageId: JourneyStageId;
+  messages: ChatMessage[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface PracticalGuide {

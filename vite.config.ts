@@ -5,15 +5,46 @@ import path from 'path';
 import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 
+function resolvePublicOrigin(): string {
+  const appUrl = process.env.APP_URL?.trim();
+  if (appUrl && appUrl !== 'MY_APP_URL' && appUrl.startsWith('http')) {
+    return appUrl.replace(/\/+$/, '');
+  }
+  const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (vercelProd) {
+    return `https://${vercelProd.replace(/^https?:\/\//, '').replace(/\/+$/, '')}`;
+  }
+  const vercelUrl = process.env.VERCEL_URL?.trim();
+  if (vercelUrl) {
+    return `https://${vercelUrl.replace(/^https?:\/\//, '').replace(/\/+$/, '')}`;
+  }
+  return '';
+}
+
 export default defineConfig(() => {
+  const publicOrigin = resolvePublicOrigin();
+
   return {
     plugins: [
       react(),
       tailwindcss(),
+      {
+        name: 'absolute-og-image-urls',
+        transformIndexHtml(html) {
+          if (!publicOrigin) return html;
+          return html
+            .replaceAll('content="/og-image.png"', `content="${publicOrigin}/og-image.png"`)
+            .replace(
+              '<meta property="og:type" content="website" />',
+              `<meta property="og:type" content="website" />\n    <meta property="og:url" content="${publicOrigin}/" />`
+            );
+        },
+      },
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: [
           'icon.svg',
+          'og-image.png',
           'apple-touch-icon.png',
           'pwa-192x192.png',
           'pwa-512x512.png',

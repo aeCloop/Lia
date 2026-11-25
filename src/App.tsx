@@ -4,12 +4,18 @@ import {
   ActiveTab,
   ChatAttachment,
   ChatMessage,
+  Conversation,
   JourneyStageId,
   ThemeOption,
 } from './types/guia';
+import {
+  deriveConversationTitle,
+  loadConversations,
+  saveConversations,
+} from './utils/conversationStorage';
 import { Header } from './components/Header';
 import { MobileBottomBar } from './components/MobileBottomBar';
-import { StageSelectorPanel } from './components/StageSelectorPanel';
+import { ConversationSidebar } from './components/ConversationSidebar';
 import { ChatWorkspace } from './components/ChatWorkspace';
 import { PracticalGuidesView } from './components/PracticalGuidesView';
 import { AlertsView } from './components/AlertsView';
@@ -40,7 +46,16 @@ export default function App() {
   const [theme, setTheme] = useState<ThemeOption>(getInitialTheme);
   const [selectedStageId, setSelectedStageId] =
     useState<JourneyStageId>('gestacao');
+
+  const [conversations, setConversations] = useState<Conversation[]>(() =>
+    loadConversations()
+  );
+  const [activeConversationId, setActiveConversationId] = useState<
+    string | null
+  >(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
   const [isStreaming, setIsStreaming] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
@@ -61,53 +76,49 @@ export default function App() {
     }
   }, [theme]);
 
-  const sendMessage = async (text: string, attachments: ChatAttachment[]) => {
-    if (isStreaming) return;
-    setErrorMessage(null);
+  useEffect(() => {
+    saveConversations(conversations);
+  }, [conversations]);
 
-    const userMsg: ChatMessage = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      text,
-      attachments: attachments.length > 0 ? attachments : undefined,
-      createdAt: new Date().toISOString(),
-    };
+  const activeConversation = conversations.find(
+    (c) => c.id === activeConversationId
+  );
 
-    const assistantMsgId = `model-${Date.now() + 1}`;
-    const placeholderAssistant: ChatMessage = {
-      id: assistantMsgId,
-      role: 'model',
-      text: '',
-      createdAt: new Date().toISOString(),
-    };
-
-    const conversationUpToUser = [
-      ...messages.filter((m) => !m.isError),
-      userMsg,
-    ];
-    setMessages([...conversationUpToUser, placeholderAssistant]);
-    await streamAssistantResponse(conversationUpToUser, assistantMsgId);
-  };
-
-  const runRetry = async () => {
-    if (isStreaming) return;
-    setErrorMessage(null);
-    const cleaned = messages.filter((m) => !m.isError);
-    if (cleaned.length === 0 || cleaned[cleaned.length - 1].role !== 'user') {
-      return;
-    }
-    const assistantMsgId = `model-${Date.now()}`;
-    const placeholderAssistant: ChatMessage = {
-      id: assistantMsgId,
-      role: 'model',
-      text: '',
-      createdAt: new Date().toISOString(),
-    };
-    setMessages([...cleaned, placeholderAssistant]);
-    await streamAssistantResponse(cleaned, assistantMsgId);
+  const upsertConversationMessages = (
+    convId: string,
+    titleIfNew: string,
+    stageId: JourneyStageId,
+    nextMessages: ChatMessage[]
+  ) => {
+    const nowIso = new Date().toISOString();
+    setConversations((prev) => {
+      const existingIndex = prev.findIndex((c) => c.id === convId);
+      if (existingIndex === -1) {
+        const created: Conversation = {
+          id: convId,
+          title: titleIfNew,
+          stageId,
+          messages: nextMessages,
+          createdAt: nowIso,
+          updatedAt: nowIso,
+        };
+        return [created, ...prev];
+      }
+      const updated: Conversation = {
+        ...prev[existingIndex],
+        stageId,
+        messages: nextMessages,
+        updatedAt: nowIso,
+      };
+      const rest = prev.filter((c) => c.id !== convId);
+      return [updated, ...rest];
+    });
   };
 
   const streamAssistantResponse = async (
+    convId: string,
+    convTitle: string,
+    stageId: JourneyStageId,
     conversationUpToUser: ChatMessage[],
     assistantMsgId: string
   ) => {
@@ -128,7 +139,7 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          stage: selectedStageId,
+          stage: stageId,
           messages: historyForApi,
         }),
       });
@@ -183,11 +194,17 @@ export default function App() {
 
           if (parsed.text) {
             accumulatedText += parsed.text;
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === assistantMsgId ? { ...m, text: accumulatedText } : m
-              )
-            );
+            const updatedList = [
+              ...conversationUpToUser,
+              {
+                id: assistantMsgId,
+                role: 'model' as const,
+                text: accumulatedText,
+                createdAt: new Date().toISOString(),
+              },
+            ];
+            setMessages(updatedList);
+            upsertConversationMessages(convId, convTitle, stageId, updatedList);
           }
         }
       }
@@ -203,67 +220,180 @@ export default function App() {
           ? err.message
           : 'Ocorreu um erro ao conversar com a Lia.';
       setErrorMessage(fallbackMsg);
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === assistantMsgId
-            ? { ...m, text: fallbackMsg, isError: true }
-            : m
-        )
-      );
+      const errorList: ChatMessage[] = [
+        ...conversationUpToUser,
+        {
+          id: assistantMsgId,
+          role: 'model',
+          text: fallbackMsg,
+          createdAt: new Date().toISOString(),
+          isError: true,
+        },
+      ];
+      setMessages(errorList);
+      upsertConversationMessages(convId, convTitle, stageId, conversationUpToUser);
     } finally {
       setIsStreaming(false);
     }
   };
 
-  const handleAskFromGuide = (prompt: string) => {
-    setActiveTab('chat');
-    void sendMessage(prompt, []);
+  const sendMessage = async (text: string, attachments: ChatAttachment[]) => {
+    if (isStreaming) return;
+    setErrorMessage(null);
+
+    const userMsg: ChatMessage = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      text,
+      attachments: attachments.length > 0 ? attachments : undefined,
+      createdAt: new Date().toISOString(),
+    };
+
+    const assistantMsgId = `model-${Date.now() + 1}`;
+    const placeholderAssistant: ChatMessage = {
+      id: assistantMsgId,
+      role: 'model',
+      text: '',
+      createdAt: new Date().toISOString(),
+    };
+
+    const convId = activeConversationId ?? `conv-${Date.now()}`;
+    const convTitle =
+      activeConversation?.title ?? deriveConversationTitle(text, attachments);
+    if (!activeConversationId) {
+      setActiveConversationId(convId);
+    }
+
+    const conversationUpToUser = [
+      ...messages.filter((m) => !m.isError),
+      userMsg,
+    ];
+    setMessages([...conversationUpToUser, placeholderAssistant]);
+    upsertConversationMessages(
+      convId,
+      convTitle,
+      selectedStageId,
+      conversationUpToUser
+    );
+
+    await streamAssistantResponse(
+      convId,
+      convTitle,
+      selectedStageId,
+      conversationUpToUser,
+      assistantMsgId
+    );
   };
 
-  const handleClearConversation = () => {
+  const runRetry = async () => {
+    if (isStreaming || !activeConversationId) return;
+    setErrorMessage(null);
+    const cleaned = messages.filter((m) => !m.isError);
+    if (cleaned.length === 0 || cleaned[cleaned.length - 1].role !== 'user') {
+      return;
+    }
+    const assistantMsgId = `model-${Date.now()}`;
+    const placeholderAssistant: ChatMessage = {
+      id: assistantMsgId,
+      role: 'model',
+      text: '',
+      createdAt: new Date().toISOString(),
+    };
+    const title =
+      activeConversation?.title ??
+      deriveConversationTitle(cleaned[0].text, cleaned[0].attachments);
+    setMessages([...cleaned, placeholderAssistant]);
+    await streamAssistantResponse(
+      activeConversationId,
+      title,
+      selectedStageId,
+      cleaned,
+      assistantMsgId
+    );
+  };
+
+  const handleNewConversation = () => {
     if (isStreaming) return;
+    setActiveConversationId(null);
     setMessages([]);
     setErrorMessage(null);
   };
 
+  const handleSelectConversation = (id: string) => {
+    if (isStreaming) return;
+    const found = conversations.find((c) => c.id === id);
+    if (!found) return;
+    setActiveConversationId(found.id);
+    setSelectedStageId(found.stageId);
+    setMessages(found.messages);
+    setErrorMessage(null);
+    setActiveTab('chat');
+  };
+
+  const handleDeleteConversation = (id: string) => {
+    setConversations((prev) => prev.filter((c) => c.id !== id));
+    if (activeConversationId === id) {
+      setActiveConversationId(null);
+      setMessages([]);
+      setErrorMessage(null);
+    }
+  };
+
+  const handleClearAllConversations = () => {
+    if (isStreaming) return;
+    setConversations([]);
+    setActiveConversationId(null);
+    setMessages([]);
+    setErrorMessage(null);
+  };
+
+  const handleAskFromGuide = (prompt: string) => {
+    setActiveTab('chat');
+    setActiveConversationId(null);
+    setMessages([]);
+    void sendMessage(prompt, []);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--lia-canvas)] text-[var(--lia-ink)] pb-20 md:pb-0">
+    <div className="min-h-screen flex flex-col bg-[var(--lia-canvas)] text-[var(--lia-ink)] pb-16 md:pb-0">
       <Header
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onOpenEmergencyModal={() => setIsEmergencyOpen(true)}
       />
 
-      <main className="flex-1">
+      <main className="flex-1 flex flex-col">
         <FirstVisitPWABanner />
 
         {activeTab === 'chat' && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              <div className="hidden lg:block lg:col-span-4">
-                <StageSelectorPanel
-                  stages={JOURNEY_STAGES}
-                  selectedStageId={selectedStageId}
-                  onSelectStage={setSelectedStageId}
-                  onPickQuestion={(q) => void sendMessage(q, [])}
-                />
-              </div>
+          <div className="flex-1 flex min-h-0">
+            <ConversationSidebar
+              conversations={conversations}
+              activeConversationId={activeConversationId}
+              stages={JOURNEY_STAGES}
+              isMobileOpen={isMobileSidebarOpen}
+              onCloseMobile={() => setIsMobileSidebarOpen(false)}
+              onSelectConversation={handleSelectConversation}
+              onNewConversation={handleNewConversation}
+              onDeleteConversation={handleDeleteConversation}
+              onClearAllConversations={handleClearAllConversations}
+            />
 
-              <div className="lg:col-span-8">
-                <ChatWorkspace
-                  stages={JOURNEY_STAGES}
-                  selectedStageId={selectedStageId}
-                  onSelectStage={setSelectedStageId}
-                  messages={messages}
-                  isStreaming={isStreaming}
-                  errorMessage={errorMessage}
-                  onSendMessage={(text, atts) => void sendMessage(text, atts)}
-                  onRetryLastMessage={() => void runRetry()}
-                  onClearConversation={handleClearConversation}
-                  onOpenEmergencyModal={() => setIsEmergencyOpen(true)}
-                />
-              </div>
-            </div>
+            <ChatWorkspace
+              stages={JOURNEY_STAGES}
+              selectedStageId={selectedStageId}
+              onSelectStage={setSelectedStageId}
+              conversationTitle={activeConversation?.title ?? null}
+              savedCount={conversations.length}
+              messages={messages}
+              isStreaming={isStreaming}
+              errorMessage={errorMessage}
+              onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+              onSendMessage={(text, atts) => void sendMessage(text, atts)}
+              onRetryLastMessage={() => void runRetry()}
+              onNewConversation={handleNewConversation}
+              onOpenEmergencyModal={() => setIsEmergencyOpen(true)}
+            />
           </div>
         )}
 
@@ -279,8 +409,8 @@ export default function App() {
           <SettingsView
             theme={theme}
             onChangeTheme={setTheme}
-            hasMessages={messages.length > 0}
-            onClearConversation={handleClearConversation}
+            hasMessages={messages.length > 0 || conversations.length > 0}
+            onClearConversation={handleClearAllConversations}
           />
         )}
       </main>
