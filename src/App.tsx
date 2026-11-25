@@ -81,7 +81,37 @@ export default function App() {
       createdAt: new Date().toISOString(),
     };
 
-    const historyForApi = [...messages, userMsg].map((msg) => ({
+    const conversationUpToUser = [
+      ...messages.filter((m) => !m.isError),
+      userMsg,
+    ];
+    setMessages([...conversationUpToUser, placeholderAssistant]);
+    await streamAssistantResponse(conversationUpToUser, assistantMsgId);
+  };
+
+  const runRetry = async () => {
+    if (isStreaming) return;
+    setErrorMessage(null);
+    const cleaned = messages.filter((m) => !m.isError);
+    if (cleaned.length === 0 || cleaned[cleaned.length - 1].role !== 'user') {
+      return;
+    }
+    const assistantMsgId = `model-${Date.now()}`;
+    const placeholderAssistant: ChatMessage = {
+      id: assistantMsgId,
+      role: 'model',
+      text: '',
+      createdAt: new Date().toISOString(),
+    };
+    setMessages([...cleaned, placeholderAssistant]);
+    await streamAssistantResponse(cleaned, assistantMsgId);
+  };
+
+  const streamAssistantResponse = async (
+    conversationUpToUser: ChatMessage[],
+    assistantMsgId: string
+  ) => {
+    const historyForApi = conversationUpToUser.map((msg) => ({
       role: msg.role,
       text: msg.text,
       attachments: msg.attachments?.map((att) => ({
@@ -91,7 +121,6 @@ export default function App() {
       })),
     }));
 
-    setMessages((prev) => [...prev, userMsg, placeholderAssistant]);
     setIsStreaming(true);
 
     try {
@@ -229,6 +258,7 @@ export default function App() {
                   isStreaming={isStreaming}
                   errorMessage={errorMessage}
                   onSendMessage={(text, atts) => void sendMessage(text, atts)}
+                  onRetryLastMessage={() => void runRetry()}
                   onClearConversation={handleClearConversation}
                   onOpenEmergencyModal={() => setIsEmergencyOpen(true)}
                 />

@@ -265,32 +265,74 @@ export async function handleChatRequest(
 
   try {
     const systemInstruction = buildGuiaSystemInstruction(stage);
-    let stream: Awaited<
-      ReturnType<typeof ai.models.generateContentStream>
-    > | null = null;
-    const retryDelays = [600];
+    const attempts: Array<{ model: string; delayMs: number }> = [
+      { model: 'gemini-4-hydrogen', delayMs: 0 },
+      { model: 'gemini-3.1-flash-lite', delayMs: 300 },
+      { model: 'gemini-3.1-flash-lite', delayMs: 700 },
+    ];
 
-    for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
+    let activeStream: AsyncGenerator<{ text?: string }> | null = null;
+    let firstChunkText = '';
+
+    for (let i = 0; i < attempts.length; i++) {
+      const { model, delayMs } = attempts[i];
+      if (delayMs > 0) {
+        await sleep(delayMs);
+      }
       try {
-        stream = await ai.models.generateContentStream({
-          model: 'gemini-4-hydrogen',
+        const candidateStream = await ai.models.generateContentStream({
+          model,
           contents,
           config: {
             systemInstruction,
             thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
           },
         });
+
+        const iterator = candidateStream[Symbol.asyncIterator]();
+        let firstText = '';
+        while (true) {
+          const step = await iterator.next();
+          if (step.done) break;
+          const t = step.value?.text;
+          if (t) {
+            firstText = t;
+            break;
+          }
+        }
+
+        if (!firstText) {
+          throw new Error('EMPTY_STREAM_RESPONSE');
+        }
+
+        firstChunkText = firstText;
+        activeStream = (async function* () {
+          while (true) {
+            const step = await iterator.next();
+            if (step.done) break;
+            yield step.value;
+          }
+        })();
         break;
       } catch (attemptErr) {
-        if (attempt < retryDelays.length && isTransientError(attemptErr)) {
-          await sleep(retryDelays[attempt]);
+        const hasMoreAttempts = i < attempts.length - 1;
+        const rawErr =
+          attemptErr instanceof Error ? attemptErr.message : String(attemptErr);
+        const shouldFallback =
+          isTransientError(attemptErr) ||
+          rawErr.includes('429') ||
+          rawErr.includes('RESOURCE_EXHAUSTED') ||
+          rawErr.includes('NOT_FOUND') ||
+          rawErr === 'EMPTY_STREAM_RESPONSE';
+
+        if (hasMoreAttempts && shouldFallback) {
           continue;
         }
         throw attemptErr;
       }
     }
 
-    if (!stream) {
+    if (!activeStream || !firstChunkText) {
       throw new Error('Falha ao iniciar fluxo de resposta.');
     }
 
@@ -299,7 +341,9 @@ export async function handleChatRequest(
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders?.();
 
-    for await (const chunk of stream) {
+    res.write(`data: ${JSON.stringify({ text: firstChunkText })}\n\n`);
+
+    for await (const chunk of activeStream) {
       const textChunk = chunk.text;
       if (textChunk) {
         res.write(`data: ${JSON.stringify({ text: textChunk })}\n\n`);

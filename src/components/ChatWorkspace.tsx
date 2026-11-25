@@ -24,6 +24,7 @@ interface ChatWorkspaceProps {
   isStreaming: boolean;
   errorMessage: string | null;
   onSendMessage: (text: string, attachments: ChatAttachment[]) => void;
+  onRetryLastMessage: () => void;
   onClearConversation: () => void;
   onOpenEmergencyModal: () => void;
 }
@@ -53,6 +54,7 @@ export function ChatWorkspace({
   isStreaming,
   errorMessage,
   onSendMessage,
+  onRetryLastMessage,
   onClearConversation,
   onOpenEmergencyModal,
 }: ChatWorkspaceProps) {
@@ -339,6 +341,18 @@ export function ChatWorkspace({
                           Lia está preparando a resposta...
                         </span>
                       )}
+                      {msg.isError && !isStreaming && (
+                        <div className="mt-3">
+                          <button
+                            type="button"
+                            onClick={onRetryLastMessage}
+                            className="inline-flex items-center gap-1.5 min-h-[38px] px-3.5 py-1.5 rounded-xl bg-white border border-[#E2B5B5] hover:bg-[#FAF0F0] text-xs font-semibold text-[#7A2020] transition-colors cursor-pointer"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
+                            <span>Tentar novamente</span>
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -349,8 +363,8 @@ export function ChatWorkspace({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Inline Errors */}
-      {(errorMessage || fileError) && (
+      {/* File validation errors (chat errors appear inside Lia's message bubble) */}
+      {(fileError || (errorMessage && messages.every((m) => !m.isError))) && (
         <div
           role="alert"
           className="mx-4 sm:mx-6 mb-2 px-4 py-2.5 rounded-xl bg-[#FDF3F3] border border-[#EBC7C7] text-xs sm:text-sm text-[#8F2424]"
