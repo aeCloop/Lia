@@ -1,0 +1,6 @@
+{
+  "name": "Guia — Apoio à Maternidade e Paternidade",
+  "description": "Assistente acolhedora para pais, mães e cuidadores de primeira viagem no Brasil, do planejamento aos 5 anos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
