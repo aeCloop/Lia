@@ -166,18 +166,18 @@ export function ChatWorkspace({
   return (
     <section
       aria-label="Conversa com a Lia"
-      className="flex-1 flex flex-col min-w-0 bg-[var(--lia-canvas)] min-h-[calc(100vh-8rem)] lg:h-[calc(100vh-4rem)]"
+      className="flex-1 flex flex-col min-w-0 min-h-0 h-full bg-[var(--lia-canvas)]"
     >
       {/* Top Chat Toolbar */}
-      <div className="bg-white border-b border-[var(--lia-border)] px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
+      <div className="shrink-0 bg-white border-b border-[var(--lia-border)] px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
           <button
             type="button"
             onClick={onOpenMobileSidebar}
             aria-label="Abrir histórico de conversas"
-            className="lg:hidden min-h-[40px] px-3 py-2 rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] hover:bg-[var(--lia-surface-hover)] text-xs font-medium text-[var(--lia-ink)] inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+            className="lg:hidden min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] hover:bg-[var(--lia-surface-hover)] text-xs font-medium text-[var(--lia-ink)] inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
           >
-            <PanelLeft className="w-4 h-4 text-[var(--lia-accent)]" aria-hidden="true" />
+            <PanelLeft className="w-4 h-4 text-[var(--lia-accent)] shrink-0" aria-hidden="true" />
             <span>Histórico</span>
             {savedCount > 0 && (
               <span className="text-[var(--lia-ink-muted)] tabular-nums">
@@ -187,15 +187,17 @@ export function ChatWorkspace({
           </button>
 
           <div className="min-w-0">
-            <h1 className="font-display text-base sm:text-lg font-semibold text-[var(--lia-ink)] truncate">
+            <h1 className="font-display text-sm sm:text-lg font-semibold text-[var(--lia-ink)] truncate">
               {conversationTitle || 'Conversar com a Lia'}
             </h1>
-            <p className="text-xs text-[var(--lia-ink-muted)] truncate">
+            <p className="text-[11px] sm:text-xs text-[var(--lia-ink-muted)] truncate">
               <span>{currentStage.label}</span>
-              <span aria-hidden="true" className="mx-1.5">
+              <span aria-hidden="true" className="hidden sm:inline mx-1.5">
                 ·
               </span>
-              <span>Orientação educativa, não substitui consulta</span>
+              <span className="hidden sm:inline">
+                Orientação educativa, não substitui consulta
+              </span>
             </p>
           </div>
         </div>
@@ -205,20 +207,20 @@ export function ChatWorkspace({
             type="button"
             onClick={onNewConversation}
             disabled={isStreaming}
-            className="inline-flex items-center gap-1.5 min-h-[40px] px-3 py-2 rounded-xl border border-[var(--lia-border)] bg-white hover:bg-[var(--lia-surface-soft)] text-xs font-medium text-[var(--lia-ink)] whitespace-nowrap shrink-0 transition-colors disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center gap-1.5 min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-xl border border-[var(--lia-border)] bg-white hover:bg-[var(--lia-surface-soft)] text-xs font-medium text-[var(--lia-ink)] whitespace-nowrap shrink-0 transition-colors disabled:opacity-50 cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5 text-[var(--lia-accent)]" aria-hidden="true" />
+            <Plus className="w-3.5 h-3.5 text-[var(--lia-accent)] shrink-0" aria-hidden="true" />
             <span>Nova</span>
           </button>
         )}
       </div>
 
       {/* Horizontal Stage Context Switcher */}
-      <div className="bg-white/80 border-b border-[var(--lia-border)] px-4 sm:px-6 py-2">
+      <div className="shrink-0 bg-white/80 border-b border-[var(--lia-border)] px-3 sm:px-6 py-2">
         <div
           role="radiogroup"
           aria-label="Fase atual da família"
-          className="max-w-3xl mx-auto flex items-center gap-1.5 overflow-x-auto"
+          className="w-full max-w-3xl mx-auto min-w-0 flex items-center gap-1.5 overflow-x-auto no-scrollbar"
         >
           {stages.map((stage) => {
             const isSelected = stage.id === selectedStageId;
@@ -229,7 +231,7 @@ export function ChatWorkspace({
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => onSelectStage(stage.id)}
-                className={`min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                className={`min-h-[38px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   isSelected
                     ? 'bg-[var(--lia-accent)] text-white'
                     : 'bg-[var(--lia-surface-soft)] text-[var(--lia-ink-secondary)] hover:bg-[var(--lia-surface-hover)]'
@@ -243,13 +245,13 @@ export function ChatWorkspace({
       </div>
 
       {/* Centered Message Stream (ChatGPT / Gemini style) */}
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
-        <div className="max-w-3xl mx-auto space-y-6">
+      <div className="flex-1 min-h-0 overflow-y-auto px-3 sm:px-6 py-4 sm:py-6">
+        <div className="max-w-3xl mx-auto space-y-5 sm:space-y-6">
           {messages.length === 0 ? (
-            <div className="py-2 sm:py-6 space-y-6">
+            <div className="py-1 sm:py-4 space-y-5 sm:space-y-6">
               {/* Welcome Hero */}
-              <div className="bg-white border border-[var(--lia-border)] rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                <div className="w-full sm:w-36 aspect-[4/3] rounded-xl overflow-hidden bg-[var(--lia-accent-soft)] shrink-0">
+              <div className="bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
+                <div className="w-full sm:w-36 aspect-[16/9] sm:aspect-[4/3] max-h-44 sm:max-h-none rounded-xl overflow-hidden bg-[var(--lia-accent-soft)] shrink-0">
                   {!heroImgError ? (
                     <img
                       src="/src/assets/images/guia_welcome_family_1795607798041.jpg"
@@ -268,7 +270,7 @@ export function ChatWorkspace({
                   )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5 sm:space-y-2 min-w-0">
                   <p className="text-xs font-medium text-[var(--lia-accent-strong)]">
                     <span>{currentStage.label}</span>
                     <span aria-hidden="true" className="mx-1.5">
@@ -276,7 +278,7 @@ export function ChatWorkspace({
                     </span>
                     <span>{currentStage.ageRange}</span>
                   </p>
-                  <h2 className="font-display text-2xl font-semibold text-[var(--lia-ink)] leading-snug">
+                  <h2 className="font-display text-xl sm:text-2xl font-semibold text-[var(--lia-ink)] leading-snug">
                     Olá, eu sou a Lia
                   </h2>
                   <p className="text-sm text-[var(--lia-ink-secondary)] leading-relaxed">
@@ -308,7 +310,7 @@ export function ChatWorkspace({
                       onClick={() => onSendMessage(question, [])}
                       className="min-h-[52px] px-4 py-3 rounded-2xl bg-white hover:bg-[var(--lia-accent-soft)] border border-[var(--lia-border)] hover:border-[var(--lia-border-accent)] text-left text-sm text-[var(--lia-ink)] flex items-center justify-between gap-3 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
                     >
-                      <span className="leading-snug">{question}</span>
+                      <span className="leading-snug min-w-0">{question}</span>
                       <ChevronRight
                         className="w-4 h-4 text-[var(--lia-accent)] shrink-0"
                         aria-hidden="true"
@@ -324,10 +326,10 @@ export function ChatWorkspace({
               return (
                 <div
                   key={msg.id}
-                  className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
+                  className={`flex min-w-0 ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[92%] sm:max-w-[82%] rounded-2xl px-4 py-3.5 ${
+                    className={`min-w-0 max-w-[92%] sm:max-w-[82%] rounded-2xl px-3.5 sm:px-4 py-3 sm:py-3.5 break-words ${
                       isUser
                         ? 'bg-[var(--lia-accent)] text-white'
                         : msg.isError
@@ -345,7 +347,7 @@ export function ChatWorkspace({
                             type="button"
                             onClick={() => handleCopy(msg.id, msg.text)}
                             aria-label="Copiar resposta"
-                            className="inline-flex items-center gap-1 text-[11px] text-[var(--lia-ink-muted)] hover:text-[var(--lia-ink)] cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--lia-accent)] rounded"
+                            className="inline-flex items-center gap-1 min-h-[32px] px-2 -mr-1.5 text-[11px] text-[var(--lia-ink-muted)] hover:text-[var(--lia-ink)] cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--lia-accent)] rounded"
                           >
                             {copiedId === msg.id ? (
                               <>
@@ -364,11 +366,11 @@ export function ChatWorkspace({
                     )}
 
                     {msg.attachments && msg.attachments.length > 0 && (
-                      <div className="mb-2.5 flex flex-wrap gap-2">
+                      <div className="mb-2.5 flex flex-wrap gap-2 max-w-full">
                         {msg.attachments.map((att) => (
                           <div
                             key={att.id}
-                            className={`rounded-xl overflow-hidden border ${
+                            className={`rounded-xl overflow-hidden border max-w-full ${
                               isUser
                                 ? 'border-white/25 bg-white/10'
                                 : 'border-[var(--lia-border)] bg-[var(--lia-surface-soft)]'
@@ -378,12 +380,12 @@ export function ChatWorkspace({
                               <img
                                 src={att.previewUrl}
                                 alt={att.name}
-                                className="max-h-40 max-w-[200px] object-cover"
+                                className="max-h-40 max-w-full sm:max-w-[220px] object-cover"
                               />
                             ) : (
-                              <div className="px-3 py-2 flex items-center gap-2 text-xs">
+                              <div className="px-3 py-2 flex items-center gap-2 text-xs min-w-0">
                                 <FileText className="w-4 h-4 shrink-0" />
-                                <span className="truncate max-w-[180px]">
+                                <span className="truncate max-w-[160px] sm:max-w-[220px]">
                                   {att.name}
                                 </span>
                               </div>
@@ -394,7 +396,7 @@ export function ChatWorkspace({
                     )}
 
                     {isUser ? (
-                      <p className="text-sm sm:text-[15px] leading-relaxed whitespace-pre-wrap">
+                      <p className="text-sm sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
                         {msg.text}
                       </p>
                     ) : (
@@ -411,7 +413,7 @@ export function ChatWorkspace({
                             <button
                               type="button"
                               onClick={onRetryLastMessage}
-                              className="inline-flex items-center gap-1.5 min-h-[38px] px-3.5 py-1.5 rounded-xl bg-white border border-[#E2B5B5] hover:bg-[#FAF0F0] text-xs font-semibold text-[#7A2020] transition-colors cursor-pointer"
+                              className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 py-1.5 rounded-xl bg-white border border-[#E2B5B5] hover:bg-[#FAF0F0] text-xs font-semibold text-[#7A2020] transition-colors cursor-pointer"
                             >
                               <RotateCcw
                                 className="w-3.5 h-3.5"
@@ -434,10 +436,10 @@ export function ChatWorkspace({
 
       {/* File validation errors */}
       {(fileError || (errorMessage && messages.every((m) => !m.isError))) && (
-        <div className="px-4 sm:px-6 pb-2">
+        <div className="shrink-0 px-3 sm:px-6 pb-2">
           <div
             role="alert"
-            className="max-w-3xl mx-auto px-4 py-2.5 rounded-xl bg-[#FDF3F3] border border-[#EBC7C7] text-xs sm:text-sm text-[#8F2424]"
+            className="max-w-3xl mx-auto px-3.5 py-2.5 rounded-xl bg-[#FDF3F3] border border-[#EBC7C7] text-xs sm:text-sm text-[#8F2424] break-words"
           >
             {fileError || errorMessage}
           </div>
@@ -445,30 +447,32 @@ export function ChatWorkspace({
       )}
 
       {/* Pinned Bottom Composer */}
-      <div className="bg-white border-t border-[var(--lia-border)] px-4 sm:px-6 py-3">
+      <div className="shrink-0 bg-white border-t border-[var(--lia-border)] px-3 sm:px-6 py-2.5 sm:py-3">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
           {attachments.length > 0 && (
-            <div className="mb-3 flex flex-wrap gap-2">
+            <div className="mb-2.5 flex flex-wrap gap-2">
               {attachments.map((att) => (
                 <div
                   key={att.id}
-                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-[var(--lia-surface-soft)] border border-[var(--lia-border)] text-xs text-[var(--lia-ink)]"
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-[var(--lia-surface-soft)] border border-[var(--lia-border)] text-xs text-[var(--lia-ink)] max-w-full"
                 >
                   {att.previewUrl ? (
                     <img
                       src={att.previewUrl}
                       alt={att.name}
-                      className="w-7 h-7 rounded object-cover"
+                      className="w-7 h-7 rounded object-cover shrink-0"
                     />
                   ) : (
-                    <FileText className="w-4 h-4 text-[var(--lia-accent)]" />
+                    <FileText className="w-4 h-4 text-[var(--lia-accent)] shrink-0" />
                   )}
-                  <span className="max-w-[140px] truncate">{att.name}</span>
+                  <span className="max-w-[120px] sm:max-w-[180px] truncate">
+                    {att.name}
+                  </span>
                   <button
                     type="button"
                     onClick={() => handleRemoveAttachment(att.id)}
                     aria-label={`Remover ${att.name}`}
-                    className="p-1 text-[var(--lia-ink-muted)] hover:text-[#B83232] cursor-pointer"
+                    className="p-1 text-[var(--lia-ink-muted)] hover:text-[#B83232] cursor-pointer shrink-0"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -494,7 +498,7 @@ export function ChatWorkspace({
               disabled={isStreaming || attachments.length >= 3}
               title="Anexar foto ou arquivo (sem dados pessoais)"
               aria-label="Anexar foto ou arquivo"
-              className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] hover:bg-[var(--lia-surface-hover)] text-[var(--lia-ink-secondary)] transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
+              className="min-h-[44px] min-w-[44px] sm:min-h-[48px] sm:min-w-[48px] shrink-0 flex items-center justify-center rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] hover:bg-[var(--lia-surface-hover)] text-[var(--lia-ink-secondary)] transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
             >
               <Paperclip className="w-5 h-5" aria-hidden="true" />
             </button>
@@ -506,7 +510,7 @@ export function ChatWorkspace({
               rows={1}
               placeholder="Escreva sua dúvida..."
               aria-label="Mensagem para a Lia"
-              className="flex-1 min-h-[48px] max-h-32 px-4 py-3 rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] focus:bg-white text-base sm:text-sm leading-snug text-[var(--lia-ink)] placeholder:text-[var(--lia-ink-muted)] resize-y focus:outline-none focus:border-[var(--lia-accent)]"
+              className="flex-1 min-w-0 min-h-[44px] sm:min-h-[48px] max-h-28 sm:max-h-32 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] focus:bg-white text-base sm:text-sm leading-snug text-[var(--lia-ink)] placeholder:text-[var(--lia-ink-muted)] resize-y focus:outline-none focus:border-[var(--lia-accent)]"
             />
 
             <button
@@ -516,7 +520,7 @@ export function ChatWorkspace({
                 (!inputText.trim() && attachments.length === 0)
               }
               aria-label="Enviar mensagem"
-              className="min-h-[48px] px-4 py-2.5 rounded-xl bg-[var(--lia-accent)] hover:bg-[var(--lia-accent-hover)] text-white text-sm font-medium inline-flex items-center gap-2 transition-colors disabled:opacity-50 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
+              className="min-h-[44px] min-w-[44px] sm:min-h-[48px] px-3.5 sm:px-4 py-2.5 rounded-xl bg-[var(--lia-accent)] hover:bg-[var(--lia-accent-hover)] text-white text-sm font-medium inline-flex items-center justify-center gap-2 transition-colors disabled:opacity-50 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
             >
               <Send className="w-4 h-4" aria-hidden="true" />
               <span className="hidden sm:inline">
@@ -525,7 +529,7 @@ export function ChatWorkspace({
             </button>
           </div>
 
-          <p className="mt-2 text-[11px] text-[var(--lia-ink-muted)]">
+          <p className="mt-1.5 text-[11px] leading-snug text-[var(--lia-ink-muted)]">
             Histórico salvo apenas neste aparelho · Não envie CPF, endereço ou
             exames com nome completo.
           </p>

@@ -21,9 +21,9 @@ export function PracticalGuidesView({ onAskLia }: PracticalGuidesViewProps) {
       : PRACTICAL_GUIDES.filter((g) => g.category === selectedCategory);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--lia-border)] pb-6">
-        <div>
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-[var(--lia-border)] pb-5 sm:pb-6">
+        <div className="min-w-0">
           <p className="text-xs text-[var(--lia-ink-muted)] mb-1">
             <span>Referências oficiais</span>
             <span aria-hidden="true" className="mx-1.5">
@@ -44,7 +44,7 @@ export function PracticalGuidesView({ onAskLia }: PracticalGuidesViewProps) {
         <div
           role="tablist"
           aria-label="Filtrar guias por tema"
-          className="flex items-center gap-1.5 overflow-x-auto pb-1"
+          className="w-full lg:w-auto max-w-full min-w-0 flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1"
         >
           {categories.map((category) => {
             const active = selectedCategory === category;
@@ -68,13 +68,13 @@ export function PracticalGuidesView({ onAskLia }: PracticalGuidesViewProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
         {filteredGuides.map((guide) => {
           const hasImage = Boolean(guide.imageUrl) && !failedImages[guide.id];
           return (
             <article
               key={guide.id}
-              className="bg-white border border-[var(--lia-border)] rounded-2xl flex flex-col overflow-hidden"
+              className="min-w-0 bg-white border border-[var(--lia-border)] rounded-2xl flex flex-col overflow-hidden"
             >
               {guide.imageUrl && (
                 <div className="aspect-[4/3] w-full bg-[var(--lia-accent-soft)] overflow-hidden">
@@ -105,7 +105,7 @@ export function PracticalGuidesView({ onAskLia }: PracticalGuidesViewProps) {
                 </div>
               )}
 
-              <div className="p-5 sm:p-6 flex-1 flex flex-col">
+              <div className="p-4 sm:p-6 flex-1 flex flex-col min-w-0">
                 <p className="text-xs text-[var(--lia-ink-muted)] mb-1.5">
                   <span>{guide.category}</span>
                   <span aria-hidden="true" className="mx-1.5">
@@ -114,11 +114,11 @@ export function PracticalGuidesView({ onAskLia }: PracticalGuidesViewProps) {
                   <span>{guide.sourceLabel}</span>
                 </p>
 
-                <h2 className="font-display text-xl font-semibold text-[var(--lia-ink)] leading-snug">
+                <h2 className="font-display text-lg sm:text-xl font-semibold text-[var(--lia-ink)] leading-snug break-words">
                   {guide.title}
                 </h2>
 
-                <p className="mt-2 text-sm text-[var(--lia-ink-secondary)] leading-relaxed">
+                <p className="mt-2 text-sm text-[var(--lia-ink-secondary)] leading-relaxed break-words">
                   {guide.summary}
                 </p>
 
@@ -126,12 +126,12 @@ export function PracticalGuidesView({ onAskLia }: PracticalGuidesViewProps) {
 
                 <ul className="space-y-2 text-sm text-[var(--lia-ink-secondary)] leading-relaxed flex-1">
                   {guide.keyPoints.map((point) => (
-                    <li key={point} className="flex items-start gap-2.5">
+                    <li key={point} className="flex items-start gap-2.5 min-w-0">
                       <span
                         aria-hidden="true"
                         className="mt-2 w-1.5 h-1.5 rounded-full bg-[var(--lia-accent)] shrink-0"
                       />
-                      <span>{point}</span>
+                      <span className="min-w-0 break-words">{point}</span>
                     </li>
                   ))}
                 </ul>
@@ -142,7 +142,7 @@ export function PracticalGuidesView({ onAskLia }: PracticalGuidesViewProps) {
                     onClick={() => onAskLia(guide.promptForGuia)}
                     className="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[var(--lia-surface-soft)] hover:bg-[var(--lia-accent-soft)] border border-[var(--lia-border)] hover:border-[var(--lia-border-accent)] text-sm font-medium text-[var(--lia-accent-strong)] inline-flex items-center justify-between gap-2 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
                   >
-                    <span>Perguntar à Lia sobre isso</span>
+                    <span className="truncate">Perguntar à Lia sobre isso</span>
                     <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
                   </button>
                 </div>

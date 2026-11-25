@@ -34,7 +34,7 @@ function InstallInstructionsModal({
       onClick={onClose}
     >
       <div
-        className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-2xl border border-[var(--lia-border)] p-5 sm:p-6"
+        className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-2xl border border-[var(--lia-border)] max-h-[90dvh] overflow-y-auto p-5 sm:p-6 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-3 pb-3 border-b border-[var(--lia-border)]">
@@ -144,17 +144,17 @@ export function FirstVisitPWABanner() {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-5">
+      <div className="shrink-0 w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4">
         <div
           role="region"
           aria-label="Instalar aplicativo Lia"
-          className="bg-white border border-[var(--lia-border-accent)] rounded-2xl p-4 sm:px-5 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          className="bg-white border border-[var(--lia-border-accent)] rounded-2xl p-3.5 sm:px-5 sm:py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4"
         >
-          <div className="flex items-start sm:items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-[var(--lia-accent-soft)] text-[var(--lia-accent)] flex items-center justify-center shrink-0">
-              <Smartphone className="w-5 h-5" aria-hidden="true" />
+          <div className="flex items-start sm:items-center gap-3 min-w-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[var(--lia-accent-soft)] text-[var(--lia-accent)] flex items-center justify-center shrink-0">
+              <Smartphone className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-sm font-semibold text-[var(--lia-ink)]">
                 Leve a Lia com você no celular
               </p>
@@ -165,11 +165,11 @@ export function FirstVisitPWABanner() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto shrink-0">
             <button
               type="button"
               onClick={() => void handleInstallClick()}
-              className="min-h-[44px] px-4 py-2 rounded-xl bg-[var(--lia-accent)] hover:bg-[var(--lia-accent-hover)] text-white text-xs sm:text-sm font-medium inline-flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
+              className="min-h-[44px] px-3.5 sm:px-4 py-2 rounded-xl bg-[var(--lia-accent)] hover:bg-[var(--lia-accent-hover)] text-white text-xs sm:text-sm font-medium inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
             >
               <Download className="w-4 h-4 shrink-0" aria-hidden="true" />
               <span>Baixar PWA</span>
@@ -178,7 +178,7 @@ export function FirstVisitPWABanner() {
             <button
               type="button"
               onClick={handleDismiss}
-              className="min-h-[44px] px-3 py-2 rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] hover:bg-[var(--lia-surface-hover)] text-xs font-medium text-[var(--lia-ink-secondary)] whitespace-nowrap transition-colors cursor-pointer"
+              className="min-h-[44px] px-3 py-2 rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] hover:bg-[var(--lia-surface-hover)] text-xs font-medium text-[var(--lia-ink-secondary)] inline-flex items-center justify-center whitespace-nowrap transition-colors cursor-pointer"
             >
               Agora não
             </button>
@@ -220,7 +220,7 @@ export function PWAInstallButton() {
       <button
         type="button"
         onClick={() => void handleClick()}
-        className="min-h-[44px] px-4 py-2.5 rounded-xl bg-[var(--lia-accent)] hover:bg-[var(--lia-accent-hover)] text-white text-sm font-medium inline-flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
+        className="min-h-[44px] px-4 py-2.5 rounded-xl bg-[var(--lia-accent)] hover:bg-[var(--lia-accent-hover)] text-white text-sm font-medium inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lia-accent)]"
       >
         <Download className="w-4 h-4 shrink-0" aria-hidden="true" />
         <span>Baixar aplicativo (PWA)</span>
@@ -243,7 +243,7 @@ export function OfflineIndicator() {
   return (
     <div
       role="status"
-      className="fixed bottom-20 md:bottom-4 left-4 z-40 flex items-center gap-2 rounded-xl bg-[#854D0E] px-3.5 py-2 text-xs font-medium text-white shadow-md"
+      className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom))] lg:bottom-4 left-3 right-3 sm:right-auto sm:left-4 z-40 flex items-center gap-2 rounded-xl bg-[#854D0E] px-3.5 py-2 text-xs font-medium text-white shadow-md"
     >
       <WifiOff className="w-4 h-4 shrink-0" aria-hidden="true" />
       <span>Sem internet — Guias salvos continuam acessíveis</span>

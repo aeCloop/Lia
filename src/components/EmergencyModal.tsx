@@ -33,11 +33,11 @@ export function EmergencyModal({
       onClick={onClose}
     >
       <div
-        className="w-full sm:max-w-xl bg-white rounded-t-3xl sm:rounded-2xl border border-[var(--lia-border)] max-h-[90vh] overflow-y-auto p-5 sm:p-6"
+        className="w-full sm:max-w-xl bg-white rounded-t-3xl sm:rounded-2xl border border-[var(--lia-border)] max-h-[90dvh] overflow-y-auto p-4 sm:p-6 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4 pb-4 border-b border-[var(--lia-border)]">
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-semibold text-[#B83232]">
               Atendimento imediato e apoio
             </p>
@@ -53,7 +53,7 @@ export function EmergencyModal({
             type="button"
             onClick={onClose}
             aria-label="Fechar janela de emergência"
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-[var(--lia-ink-muted)] hover:bg-[var(--lia-surface-soft)] cursor-pointer"
+            className="min-h-[44px] min-w-[44px] shrink-0 flex items-center justify-center rounded-xl text-[var(--lia-ink-muted)] hover:bg-[var(--lia-surface-soft)] cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -68,7 +68,7 @@ export function EmergencyModal({
           {EMERGENCY_CHANNELS.map((channel) => (
             <div
               key={channel.id}
-              className="p-3.5 rounded-xl bg-[var(--lia-surface-soft)] border border-[var(--lia-border)] flex items-center justify-between gap-3"
+              className="p-3.5 rounded-xl bg-[var(--lia-surface-soft)] border border-[var(--lia-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-3"
             >
               <div className="min-w-0">
                 <h3 className="text-sm font-semibold text-[var(--lia-ink)]">
@@ -80,10 +80,10 @@ export function EmergencyModal({
               </div>
               <a
                 href={channel.telHref}
-                className="min-h-[44px] px-3.5 py-2 rounded-xl bg-[#B83232] hover:bg-[#9E2828] text-white text-xs sm:text-sm font-semibold tabular-nums inline-flex items-center gap-1.5 whitespace-nowrap shrink-0"
+                className="w-full sm:w-auto min-h-[44px] px-3.5 py-2 rounded-xl bg-[#B83232] hover:bg-[#9E2828] text-white text-xs sm:text-sm font-semibold tabular-nums inline-flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               >
-                <PhoneCall className="w-4 h-4" aria-hidden="true" />
-                <span>{channel.number}</span>
+                <PhoneCall className="w-4 h-4 shrink-0" aria-hidden="true" />
+                <span>Ligar {channel.number}</span>
               </a>
             </div>
           ))}

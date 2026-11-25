@@ -2,8 +2,8 @@ import { BookCheck, Lock, Scale, Users } from 'lucide-react';
 
 export function SourcesAndRightsView() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-      <div className="border-b border-[var(--lia-border)] pb-6">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6">
+      <div className="border-b border-[var(--lia-border)] pb-5 sm:pb-6">
         <p className="text-xs text-[var(--lia-ink-muted)] mb-1">
           <span>Transparência</span>
           <span aria-hidden="true" className="mx-1.5">
@@ -22,14 +22,14 @@ export function SourcesAndRightsView() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-6 space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+        <section className="min-w-0 bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6 space-y-3">
           <div className="flex items-center gap-3">
             <BookCheck
-              className="w-5 h-5 text-[var(--lia-accent)]"
+              className="w-5 h-5 text-[var(--lia-accent)] shrink-0"
               aria-hidden="true"
             />
-            <h2 className="font-display text-xl font-semibold text-[var(--lia-ink)]">
+            <h2 className="font-display text-lg sm:text-xl font-semibold text-[var(--lia-ink)]">
               Fontes de referência
             </h2>
           </div>
@@ -51,13 +51,13 @@ export function SourcesAndRightsView() {
           </ul>
         </section>
 
-        <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-6 space-y-3">
+        <section className="min-w-0 bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6 space-y-3">
           <div className="flex items-center gap-3">
             <Scale
-              className="w-5 h-5 text-[var(--lia-accent)]"
+              className="w-5 h-5 text-[var(--lia-accent)] shrink-0"
               aria-hidden="true"
             />
-            <h2 className="font-display text-xl font-semibold text-[var(--lia-ink)]">
+            <h2 className="font-display text-lg sm:text-xl font-semibold text-[var(--lia-ink)]">
               Vacinas, benefícios e leis podem mudar
             </h2>
           </div>
@@ -73,13 +73,13 @@ export function SourcesAndRightsView() {
           </p>
         </section>
 
-        <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-6 space-y-3">
+        <section className="min-w-0 bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6 space-y-3">
           <div className="flex items-center gap-3">
             <Users
-              className="w-5 h-5 text-[var(--lia-accent)]"
+              className="w-5 h-5 text-[var(--lia-accent)] shrink-0"
               aria-hidden="true"
             />
-            <h2 className="font-display text-xl font-semibold text-[var(--lia-ink)]">
+            <h2 className="font-display text-lg sm:text-xl font-semibold text-[var(--lia-ink)]">
               Para todos os tipos de família
             </h2>
           </div>
@@ -91,13 +91,13 @@ export function SourcesAndRightsView() {
           </p>
         </section>
 
-        <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-6 space-y-3">
+        <section className="min-w-0 bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6 space-y-3">
           <div className="flex items-center gap-3">
             <Lock
-              className="w-5 h-5 text-[var(--lia-accent)]"
+              className="w-5 h-5 text-[var(--lia-accent)] shrink-0"
               aria-hidden="true"
             />
-            <h2 className="font-display text-xl font-semibold text-[var(--lia-ink)]">
+            <h2 className="font-display text-lg sm:text-xl font-semibold text-[var(--lia-ink)]">
               Privacidade e dados pessoais
             </h2>
           </div>

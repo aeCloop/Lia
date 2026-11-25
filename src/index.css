@@ -42,11 +42,13 @@
     color: var(--lia-ink);
     background-color: var(--lia-canvas);
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   body {
     color: var(--lia-ink);
     background-color: var(--lia-canvas);
+    overflow-x: clip;
   }
 
   h1, h2, h3, .font-display {
@@ -55,7 +57,21 @@
   }
 }
 
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Clean prose styling for Lia responses */
+.lia-markdown {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .lia-markdown p + p {
   margin-top: 0.75rem;
 }
@@ -82,6 +98,19 @@
 .lia-markdown strong {
   font-weight: 600;
   color: var(--lia-ink);
+}
+
+.lia-markdown a {
+  color: var(--lia-accent);
+  text-decoration: underline;
+  word-break: break-word;
+}
+
+.lia-markdown pre,
+.lia-markdown table {
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
 }
 
 .lia-markdown h3,

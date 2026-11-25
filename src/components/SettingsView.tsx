@@ -42,8 +42,8 @@ export function SettingsView({
   onClearConversation,
 }: SettingsViewProps) {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-      <div className="border-b border-[var(--lia-border)] pb-6">
+    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-5 sm:space-y-6">
+      <div className="border-b border-[var(--lia-border)] pb-5 sm:pb-6">
         <p className="text-xs text-[var(--lia-ink-muted)] mb-1">
           <span>Preferências do aparelho</span>
           <span aria-hidden="true" className="mx-1.5">
@@ -61,14 +61,14 @@ export function SettingsView({
       </div>
 
       {/* Theme Selector */}
-      <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-5 sm:p-6 space-y-4">
-        <div className="flex items-center gap-3">
+      <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6 space-y-4">
+        <div className="flex items-start sm:items-center gap-3">
           <Palette
-            className="w-5 h-5 text-[var(--lia-accent)]"
+            className="w-5 h-5 text-[var(--lia-accent)] shrink-0 mt-0.5 sm:mt-0"
             aria-hidden="true"
           />
-          <div>
-            <h2 className="font-display text-xl font-semibold text-[var(--lia-ink)]">
+          <div className="min-w-0">
+            <h2 className="font-display text-lg sm:text-xl font-semibold text-[var(--lia-ink)]">
               Tema de cores
             </h2>
             <p className="text-xs sm:text-sm text-[var(--lia-ink-muted)]">
@@ -80,7 +80,7 @@ export function SettingsView({
         <div
           role="radiogroup"
           aria-label="Escolha o tema de cores da Lia"
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 pt-1"
         >
           {THEME_CHOICES.map((choice) => {
             const isSelected = theme === choice.id;
@@ -97,7 +97,7 @@ export function SettingsView({
                     : 'border-[var(--lia-border)] bg-white hover:bg-[var(--lia-surface-soft)]'
                 }`}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3 min-w-0">
                   <span
                     aria-hidden="true"
                     className="w-9 h-9 rounded-xl border border-black/10 shrink-0 mt-0.5"
@@ -105,8 +105,8 @@ export function SettingsView({
                       background: `linear-gradient(135deg, ${choice.swatchHex} 55%, ${choice.softHex} 55%)`,
                     }}
                   />
-                  <div>
-                    <div className="flex items-baseline gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-baseline gap-2 flex-wrap">
                       <span className="text-base font-semibold text-[var(--lia-ink)]">
                         {choice.name}
                       </span>
@@ -132,14 +132,14 @@ export function SettingsView({
       </section>
 
       {/* PWA Install Section */}
-      <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-5 sm:p-6 space-y-4">
-        <div className="flex items-center gap-3">
+      <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6 space-y-4">
+        <div className="flex items-start sm:items-center gap-3">
           <Smartphone
-            className="w-5 h-5 text-[var(--lia-accent)]"
+            className="w-5 h-5 text-[var(--lia-accent)] shrink-0 mt-0.5 sm:mt-0"
             aria-hidden="true"
           />
-          <div>
-            <h2 className="font-display text-xl font-semibold text-[var(--lia-ink)]">
+          <div className="min-w-0">
+            <h2 className="font-display text-lg sm:text-xl font-semibold text-[var(--lia-ink)]">
               Aplicativo no celular (PWA)
             </h2>
             <p className="text-xs sm:text-sm text-[var(--lia-ink-muted)]">
@@ -149,18 +149,20 @@ export function SettingsView({
           </div>
         </div>
 
-        <PWAInstallButton />
+        <div className="[&>button]:w-full sm:[&>button]:w-auto [&>button]:justify-center">
+          <PWAInstallButton />
+        </div>
       </section>
 
       {/* Session Privacy Control */}
-      <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="min-w-0">
           <h2 className="font-display text-lg font-semibold text-[var(--lia-ink)]">
-            Conversa desta sessão
+            Histórico salvo neste aparelho
           </h2>
           <p className="text-xs sm:text-sm text-[var(--lia-ink-secondary)] mt-0.5">
-            Suas mensagens não são salvas em servidor. Você pode limpar a tela
-            a qualquer momento.
+            Suas conversas ficam salvas apenas no navegador deste dispositivo.
+            Você pode apagar tudo quando quiser.
           </p>
         </div>
 
@@ -168,10 +170,10 @@ export function SettingsView({
           type="button"
           onClick={onClearConversation}
           disabled={!hasMessages}
-          className="min-h-[44px] px-4 py-2 rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] hover:bg-[var(--lia-surface-hover)] text-sm font-medium text-[var(--lia-ink)] inline-flex items-center gap-2 whitespace-nowrap shrink-0 disabled:opacity-50 cursor-pointer"
+          className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl border border-[var(--lia-border)] bg-[var(--lia-surface-soft)] hover:bg-[var(--lia-surface-hover)] text-sm font-medium text-[var(--lia-ink)] inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 disabled:opacity-50 cursor-pointer"
         >
-          <Trash2 className="w-4 h-4" aria-hidden="true" />
-          <span>Limpar conversa</span>
+          <Trash2 className="w-4 h-4 shrink-0" aria-hidden="true" />
+          <span>Limpar histórico</span>
         </button>
       </section>
     </div>

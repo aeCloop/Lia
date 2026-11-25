@@ -6,8 +6,8 @@ import {
 
 export function AlertsView() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
-      <div className="border-b border-[var(--lia-border)] pb-6">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8">
+      <div className="border-b border-[var(--lia-border)] pb-5 sm:pb-6">
         <p className="text-xs text-[#9E2828] font-medium mb-1">
           <span>Atenção imediata</span>
           <span aria-hidden="true" className="mx-1.5">
@@ -26,11 +26,11 @@ export function AlertsView() {
       </div>
 
       {/* Warning Sign Groups */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
         {WARNING_SIGN_GROUPS.map((group) => (
           <section
             key={group.id}
-            className="bg-white border border-[var(--lia-border)] rounded-2xl p-5 sm:p-6 flex flex-col"
+            className="min-w-0 bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6 flex flex-col"
           >
             <div className="flex items-start gap-3 mb-3">
               <div className="w-9 h-9 rounded-xl bg-[#FDF3F3] border border-[#EBC7C7] flex items-center justify-center shrink-0">
@@ -39,8 +39,8 @@ export function AlertsView() {
                   aria-hidden="true"
                 />
               </div>
-              <div>
-                <h2 className="font-display text-xl font-semibold text-[var(--lia-ink)] leading-snug">
+              <div className="min-w-0">
+                <h2 className="font-display text-lg sm:text-xl font-semibold text-[var(--lia-ink)] leading-snug">
                   {group.title}
                 </h2>
                 <p className="text-xs font-medium text-[#9E2828] mt-0.5">
@@ -55,12 +55,12 @@ export function AlertsView() {
 
             <ul className="space-y-2.5 text-sm text-[var(--lia-ink)] leading-relaxed">
               {group.signs.map((sign) => (
-                <li key={sign} className="flex items-start gap-2.5">
+                <li key={sign} className="flex items-start gap-2.5 min-w-0">
                   <span
                     aria-hidden="true"
                     className="mt-2 w-1.5 h-1.5 rounded-full bg-[#B83232] shrink-0"
                   />
-                  <span>{sign}</span>
+                  <span className="min-w-0 break-words">{sign}</span>
                 </li>
               ))}
             </ul>
@@ -69,9 +69,9 @@ export function AlertsView() {
       </div>
 
       {/* Telefones Úteis */}
-      <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-5 sm:p-6">
-        <div className="mb-5">
-          <h2 className="font-display text-xl font-semibold text-[var(--lia-ink)]">
+      <section className="bg-white border border-[var(--lia-border)] rounded-2xl p-4 sm:p-6">
+        <div className="mb-4 sm:mb-5">
+          <h2 className="font-display text-lg sm:text-xl font-semibold text-[var(--lia-ink)]">
             Telefones gratuitos de emergência e proteção no Brasil
           </h2>
           <p className="text-sm text-[var(--lia-ink-muted)] mt-1">
@@ -83,9 +83,9 @@ export function AlertsView() {
           {EMERGENCY_CHANNELS.map((channel) => (
             <div
               key={channel.id}
-              className="p-4 rounded-xl bg-[var(--lia-surface-soft)] border border-[var(--lia-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              className="min-w-0 p-4 rounded-xl bg-[var(--lia-surface-soft)] border border-[var(--lia-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4"
             >
-              <div className="space-y-1">
+              <div className="space-y-1 min-w-0">
                 <h3 className="text-sm font-semibold text-[var(--lia-ink)]">
                   {channel.name}
                 </h3>
@@ -99,9 +99,9 @@ export function AlertsView() {
 
               <a
                 href={channel.telHref}
-                className="min-h-[44px] px-4 py-2.5 rounded-xl bg-[#B83232] hover:bg-[#9E2828] text-white text-sm font-semibold tabular-nums inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 transition-colors"
+                className="w-full sm:w-auto min-h-[44px] px-4 py-2.5 rounded-xl bg-[#B83232] hover:bg-[#9E2828] text-white text-sm font-semibold tabular-nums inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 transition-colors"
               >
-                <PhoneCall className="w-4 h-4" aria-hidden="true" />
+                <PhoneCall className="w-4 h-4 shrink-0" aria-hidden="true" />
                 <span>Ligar {channel.number}</span>
               </a>
             </div>

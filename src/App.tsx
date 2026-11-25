@@ -354,19 +354,29 @@ export default function App() {
     void sendMessage(prompt, []);
   };
 
+  const isChatTab = activeTab === 'chat';
+
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--lia-canvas)] text-[var(--lia-ink)] pb-16 md:pb-0">
+    <div
+      className={`flex flex-col bg-[var(--lia-canvas)] text-[var(--lia-ink)] pb-[calc(3.5rem+env(safe-area-inset-bottom))] lg:pb-0 ${
+        isChatTab ? 'h-dvh overflow-hidden' : 'min-h-dvh'
+      }`}
+    >
       <Header
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onOpenEmergencyModal={() => setIsEmergencyOpen(true)}
       />
 
-      <main className="flex-1 flex flex-col">
+      <main
+        className={`flex-1 flex flex-col min-w-0 ${
+          isChatTab ? 'min-h-0 overflow-hidden' : ''
+        }`}
+      >
         <FirstVisitPWABanner />
 
-        {activeTab === 'chat' && (
-          <div className="flex-1 flex min-h-0">
+        {isChatTab && (
+          <div className="flex-1 flex min-h-0 min-w-0">
             <ConversationSidebar
               conversations={conversations}
               activeConversationId={activeConversationId}

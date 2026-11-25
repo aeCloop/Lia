@@ -162,7 +162,7 @@ export function ConversationSidebar({
                     }}
                     aria-label={`Apagar conversa ${conv.title}`}
                     title="Apagar conversa"
-                    className="min-h-[40px] min-w-[40px] mr-1 flex items-center justify-center rounded-lg text-[var(--lia-ink-muted)] hover:text-[#B83232] hover:bg-white/70 opacity-80 lg:opacity-0 lg:group-hover:opacity-100 lg:focus-visible:opacity-100 transition-opacity cursor-pointer"
+                    className="min-h-[44px] min-w-[44px] mr-0.5 flex items-center justify-center rounded-lg text-[var(--lia-ink-muted)] hover:text-[#B83232] hover:bg-white/70 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 lg:focus-visible:opacity-100 transition-opacity cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" aria-hidden="true" />
                   </button>
@@ -174,7 +174,7 @@ export function ConversationSidebar({
       </div>
 
       {/* Bottom Actions: Install PWA + Share + Clear All */}
-      <div className="p-3 border-t border-[var(--lia-border)] space-y-2 bg-[var(--lia-surface-soft)]">
+      <div className="p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:pb-3 border-t border-[var(--lia-border)] space-y-2 bg-[var(--lia-surface-soft)]">
         <div className="w-full [&>button]:w-full [&>button]:justify-center">
           <PWAInstallButton />
         </div>
@@ -182,10 +182,10 @@ export function ConversationSidebar({
         <button
           type="button"
           onClick={() => void handleShareApp()}
-          className="w-full min-h-[42px] px-3.5 py-2 rounded-xl border border-[var(--lia-border)] bg-white hover:bg-[var(--lia-surface-hover)] text-xs font-medium text-[var(--lia-ink)] inline-flex items-center justify-center gap-2 transition-colors cursor-pointer"
+          className="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-[var(--lia-border)] bg-white hover:bg-[var(--lia-surface-hover)] text-xs font-medium text-[var(--lia-ink)] inline-flex items-center justify-center gap-2 transition-colors cursor-pointer"
         >
-          <Share2 className="w-4 h-4 text-[var(--lia-accent)]" aria-hidden="true" />
-          <span>{shareFeedback || 'Compartilhar link da Lia'}</span>
+          <Share2 className="w-4 h-4 text-[var(--lia-accent)] shrink-0" aria-hidden="true" />
+          <span className="truncate">{shareFeedback || 'Compartilhar link da Lia'}</span>
         </button>
 
         {conversations.length > 0 && (
@@ -194,7 +194,7 @@ export function ConversationSidebar({
               <button
                 type="button"
                 onClick={() => setConfirmClearAll(true)}
-                className="w-full min-h-[38px] px-3 py-1.5 rounded-xl text-xs font-medium text-[var(--lia-ink-muted)] hover:text-[#B83232] hover:bg-white transition-colors cursor-pointer"
+                className="w-full min-h-[40px] px-3 py-1.5 rounded-xl text-xs font-medium text-[var(--lia-ink-muted)] hover:text-[#B83232] hover:bg-white transition-colors cursor-pointer"
               >
                 Apagar todo o histórico local
               </button>
@@ -206,14 +206,14 @@ export function ConversationSidebar({
                     onClearAllConversations();
                     setConfirmClearAll(false);
                   }}
-                  className="flex-1 min-h-[38px] px-3 py-1.5 rounded-xl bg-[#B83232] text-white text-xs font-medium cursor-pointer"
+                  className="flex-1 min-h-[40px] px-3 py-1.5 rounded-xl bg-[#B83232] text-white text-xs font-medium cursor-pointer"
                 >
                   Confirmar
                 </button>
                 <button
                   type="button"
                   onClick={() => setConfirmClearAll(false)}
-                  className="flex-1 min-h-[38px] px-3 py-1.5 rounded-xl border border-[var(--lia-border)] bg-white text-xs font-medium text-[var(--lia-ink)] cursor-pointer"
+                  className="flex-1 min-h-[40px] px-3 py-1.5 rounded-xl border border-[var(--lia-border)] bg-white text-xs font-medium text-[var(--lia-ink)] cursor-pointer"
                 >
                   Cancelar
                 </button>
@@ -230,7 +230,7 @@ export function ConversationSidebar({
       {/* Desktop persistent left sidebar */}
       <aside
         aria-label="Histórico de conversas"
-        className="hidden lg:block w-72 shrink-0 h-[calc(100vh-4rem)] sticky top-16"
+        className="hidden lg:block w-72 shrink-0 h-full min-h-0"
       >
         {sidebarContent}
       </aside>
@@ -247,7 +247,7 @@ export function ConversationSidebar({
             className="fixed inset-0 bg-black/50 backdrop-blur-xs"
             onClick={onCloseMobile}
           />
-          <div className="relative z-10 w-80 max-w-[85vw] h-full shadow-xl">
+          <div className="relative z-10 w-[min(20rem,88vw)] h-full shadow-xl">
             {sidebarContent}
           </div>
         </div>

@@ -21,13 +21,13 @@ export function Header({
   onOpenEmergencyModal,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 h-14 md:h-16 bg-white/95 backdrop-blur-md border-b border-[var(--lia-border)]">
-      <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-8">
+    <header className="sticky top-0 z-30 shrink-0 h-12 sm:h-14 lg:h-16 bg-white/95 backdrop-blur-md border-b border-[var(--lia-border)]">
+      <div className="max-w-7xl mx-auto h-full px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-3 lg:gap-8">
         {/* Zone 1: Single-element Brand wordmark */}
         <button
           type="button"
           onClick={() => onSelectTab('chat')}
-          className="font-display text-2xl font-semibold tracking-tight text-[var(--lia-accent-strong)] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--lia-accent)] rounded-sm cursor-pointer"
+          className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-[var(--lia-accent-strong)] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--lia-accent)] rounded-sm cursor-pointer"
         >
           Lia
         </button>
@@ -35,7 +35,7 @@ export function Header({
         {/* Zone 2: 5 concise single-line navigation links */}
         <nav
           aria-label="Navegação principal"
-          className="hidden md:flex items-center gap-6"
+          className="hidden lg:flex items-center gap-6"
         >
           {NAV_ITEMS.map((item) => {
             const isActive = activeTab === item.id;
@@ -62,9 +62,9 @@ export function Header({
           <button
             type="button"
             onClick={onOpenEmergencyModal}
-            className="inline-flex items-center gap-2 min-h-[40px] px-4 py-2 rounded-xl bg-[#B83232] hover:bg-[#9E2828] text-white text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B83232]"
+            className="inline-flex items-center gap-1.5 sm:gap-2 min-h-[38px] sm:min-h-[40px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-[#B83232] hover:bg-[#9E2828] text-white text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B83232]"
           >
-            <PhoneCall className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" aria-hidden="true" />
             <span>Emergência 192</span>
           </button>
         </div>
